@@ -59,32 +59,37 @@
     </style>
 </head>
 <body>
-    <canvas id="canvas"></canvas>
     <div class="text-effect bottom">ART<br>HAUS</div>
     <div class="text-effect top">ART<br>HAUS</div>
-    <script id="vert" type="x-shader/x-fragment">
-        varying vec2 vUv;
-
+    <script id="surfaceVertexShader" type="x-shader/x-vertex">
+        attribute vec3 position;
+        attribute vec2 surfacePosAttrib;
+        varying vec2 surfacePosition;
         void main() {
-            vUv = uv;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.);
+            surfacePosition = surfacePosAttrib;
+            gl_Position = vec4( position, 1.0 );
         }
     </script>
-    <script id="frag" type="x-shader/x-fragment">
+    <script id="vertexShader" type="x-shader/x-vertex">
+        attribute vec3 position;
+        void main() {
+            gl_Position = vec4(position, 1.0 );
+        }
+    </script>
+    <script id="fragmentShader" type="x-shader/x-fragment">
         //paint tunnel by @samloeschen
         //simple planar distortion tunnel made out of IQ voronoise
+
 
         #ifdef GL_ES
         precision mediump float;
         #endif
 
-        uniform float time;
-        uniform float mouseX;
-        uniform float mouseY;
-        uniform float resolutionX;
-        uniform float resolutionY;
+        #extension GL_OES_standard_derivatives : enable
 
-        varying vec2 vUv;
+        uniform float time;
+        uniform vec2 mouse;
+        uniform vec2 resolution;
 
         vec3 hash3( vec2 p ) {
             vec3 q = vec3( dot(p,vec2(127.1,311.7)), 
@@ -135,21 +140,22 @@
 
 
         void main( void ) {
-            vec2 point = vUv;
+            
+            vec2 point = gl_FragCoord.xy / resolution.xy;
             //vec2 mouse = (mouse.xy - 0.5) * 0.1; mouse is kind of ugly?
             vec2 center = vec2(0.5 - (sin(time * 0.5) * 0.05), 0.5 - (sin(time * 0.25) * 0.1));
 
             //aspect ratio
-            float aspect = resolutionX / resolutionY;
-            point *= aspect;
-            center *= aspect;
+            float aspect = resolution.x / resolution.y;
+            point.x *= aspect;
+            center.x *= aspect;
             
             //planar distortion
             float rInv = 1. / length(point - center);
             point = point * rInv - vec2(rInv, 0.0);
 
             //attenuate center glow
-            float circle = pow(length((point - center) * 0.08), 0.3) * pow((aspect >= 1.0 ? 1.0/aspect : aspect), 0.2);
+            float circle = pow(length((point - center) * 0.08), 0.3);
             
             //sample noise
             vec2 uv = vec2(point.x, point.y + time * 0.5) * 1.7;
@@ -165,11 +171,12 @@
             
             //combine
             vec3 finalColor = palette + circle + outlineCol;
-            gl_FragColor = vec4(finalColor, 1.0);
+            gl_FragColor = vec4(finalColor, 1.0);   
         }
     </script>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r79/three.min.js"></script>
 <script src="dat.gui.min.js"></script>
 <script src="main.js"></script>
+<script src="sandbox.js"></script>
 </html>
