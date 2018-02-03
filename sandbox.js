@@ -395,8 +395,31 @@ function animate() {
 	requestAnimationFrame( animate );
 	render();
 }
+var previousTime = performance.now();
+var sampleIndex = 0;
+var SAMPLE_N = 20;
+var avgTime = 0;
 function render() {
 	if ( !currentProgram ) return;
+	// instrument performance
+	var t = performance.now();
+	var dt = t - previousTime;
+	if (sampleIndex >= SAMPLE_N) {
+		// check timing, adjust quality
+		if (avgTime >= 18) {
+			quality *= 2;
+			onWindowResize();
+			console.log('Average frame time is ' + avgTime.toFixed(3) + 'ms, adjusting quality to ' + quality);
+		}
+		// reset
+		avgTime = 0;
+		sampleIndex = 0;
+		t = performance.now();
+	}
+	avgTime += dt / SAMPLE_N;
+	sampleIndex++;
+	previousTime = t;
+
 	parameters.time = Date.now() - parameters.startTime;
 	// Set uniforms for custom shader
 	gl.useProgram( currentProgram );
