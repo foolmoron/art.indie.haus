@@ -148,23 +148,10 @@
             float rInv = 1. / length(point - center);
             point = point * rInv - vec2(rInv, 0.0);
 
-            //attenuate center glow
-            float circle = pow(length((point - center) * 0.08), 0.3) * pow((aspect >= 1.0 ? 1.0/aspect : aspect), 0.2);
-            
-            //sample noise
-            vec2 uv = vec2(point.x, point.y + time * 0.5) * 1.7;
-            float noise = length(hash3(vec2(floor(uv.x * 3.) / 3., floor(uv.y * 3.) / 3.)));
-            float stepNoise = floor(noise * 10.2) / 11.; //stepping irregularly gives nice shapes 
-            
-            //draw outline around stepped noise
-            float outline = 1.0 - step(smoothstep(stepNoise - 0.03, stepNoise, noise) - (smoothstep(stepNoise, stepNoise + 0.03, noise)), 0.03);
-            vec3 outlineCol = outline * palette(sin01(time * 0.2));
-            
-            //get tunnel color from palette. I tried directly attenuating this by length of the fragment but it kept blowing out to white
-            vec3 palette = palette((stepNoise * 0.5) + sin01(time * 0.4) * 0.2);
-            
             //combine
-            vec3 finalColor = palette + circle + outlineCol;
+            vec2 uv = vec2(point.x, point.y + time * 0.5) * 1.7;
+            float noise = iqnoise(uv, 0.5, 1.2);
+            vec3 finalColor = vec3(noise, 0, 0);
             gl_FragColor = vec4(finalColor, 1.0);
         }
     </script>
