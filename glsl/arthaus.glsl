@@ -83,7 +83,7 @@ void main( void ) {
 	//sample noise
 	vec2 uv = vec2(point.x, point.y + time * 0.5) * 1.7;
 	float noise = iqnoise(uv, 0.5, 1.2);
-	float stepNoise = floor(noise * 10.) / 11.; //stepping irregularly gives nice shapes 
+	float stepNoise = floor(noise * 10.2) / 11.; //stepping irregularly gives nice shapes 
 	
 	//draw outline around stepped noise
 	float outline = 1.0 - step(smoothstep(stepNoise - 0.03, stepNoise, noise) - (smoothstep(stepNoise, stepNoise + 0.03, noise)), 0.03);
@@ -96,5 +96,3 @@ void main( void ) {
 	vec3 finalColor = palette + circle + outlineCol;
 	gl_FragColor = vec4(finalColor, 1.0);	
 }
-
-
