@@ -60,8 +60,6 @@
 </head>
 <body>
     <canvas id="canvas"></canvas>
-    <div class="text-effect bottom">ZZZ<br>HAUS</div>
-    <div class="text-effect top">ZZZ<br>HAUS</div>
     <script id="vert" type="x-shader/x-fragment">
         varying vec2 vUv;
 
@@ -153,8 +151,8 @@
             float stepNoise = floor(noise * 10.2) / 11.; //stepping irregularly gives nice shapes 
             
             //draw outline around stepped noise
-            // float outline = 1.0 - step(smoothstep(stepNoise - 0.03, stepNoise, noise) - (smoothstep(stepNoise, stepNoise + 0.03, noise)), 0.03);
-            // vec3 outlineCol = outline * palette(sin01(time * 0.2));
+            float outline = 1.0 - step(smoothstep(stepNoise - 0.03, stepNoise, noise) - (smoothstep(stepNoise, stepNoise + 0.03, noise)), 0.03);
+            vec3 outlineCol = outline * palette(sin01(time * 0.2));
             
             //get tunnel color from palette. I tried directly attenuating this by length of the fragment but it kept blowing out to white
             vec3 palette = palette((stepNoise * 0.5) + sin01(time * 0.4) * 0.2);
