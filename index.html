@@ -89,9 +89,12 @@
             return fract(sin(q)*43758.5453);
         }
 
+        float ilerp(float a, float b, float t) {
+            return saturate((t - a) / (b - a));
+        }
 
         //iq voronoise
-        float iqnoise( in vec2 x, float u, float v ) {
+        float iqnoise( vec2 x, float u, float v ) {
             vec2 p = floor(x);
             vec2 f = fract(x);
                 
@@ -106,7 +109,7 @@
                 vec3 o = hash3( p + g )*vec3(u,u,1.0);
                 vec2 r = g - f + o.xy;
                 float d = dot(r,r);
-                float ww = pow( 1.0-smoothstep(0.0,1.414,sqrt(d)), k );
+                float ww = pow( 1.0-ilerp(0.0,1.414,sqrt(d)), k );
                 va += o.z*ww;
                 wt += ww;
             }
@@ -115,7 +118,7 @@
         }
 
         //iq palette
-        vec3 palette(in float t) {
+        vec3 palette(float t) {
             //colors
             vec3 a = vec3(0.5, 0.5, 0.5);  
             vec3 b = vec3(0.5, 0.5, 0.5);
@@ -125,7 +128,7 @@
             return a + b * cos(6.28318 * (c * t + d));
         }
 
-        float sin01(in float t){
+        float sin01(float t){
             return (sin(t) + 1.) * 0.5;
         }
 
@@ -147,9 +150,17 @@
             //attenuate center glow
             float circle = pow(length((point - center) * 0.08), 0.3) * pow((aspect >= 1.0 ? 1.0/aspect : aspect), 0.2);
             
+            //sample noise
+            vec2 uv = vec2(point.x, point.y + time * 0.5) * 1.7;
+            float noise = iqnoise(uv, 0.5, 1.2);
+            float stepNoise = floor(noise * 10.2) / 11.; //stepping irregularly gives nice shapes 
+            
+            //draw outline around stepped noise
+            float outline = 1.0 - step(ilerp(stepNoise - 0.03, stepNoise, noise) - (ilerp(stepNoise, stepNoise + 0.03, noise)), 0.03);
+            vec3 outlineCol = outline * palette(sin01(time * 0.2));
+            
             //get tunnel color from palette. I tried directly attenuating this by length of the fragment but it kept blowing out to white
-            float noise = floor((vUv.x + (abs(sin(time))/ 4.) + abs(sin(vUv.y + time))*0.235) * 20.) / 20.;
-            vec3 palette = palette((noise * 0.5) + sin01(time * 0.4) * 0.2);
+            vec3 palette = palette((stepNoise * 0.5) + sin01(time * 0.4) * 0.2);
             
             //combine
             vec3 finalColor = palette + circle;// + outlineCol;
