@@ -409,7 +409,11 @@ function render() {
 		if (avgTime >= 18) {
 			quality *= 2;
 			onWindowResize();
-			console.log('Average frame time is ' + avgTime.toFixed(3) + 'ms, adjusting quality to ' + quality);
+			console.log('Average frame time is ' + avgTime.toFixed(3) + 'ms, lowering quality to ' + quality);
+		} else if (avgTime <= 10) {
+			quality /= 2;
+			onWindowResize();
+			console.log('Average frame time is ' + avgTime.toFixed(3) + 'ms, raising quality to ' + quality);
 		}
 		// reset
 		avgTime = 0;
