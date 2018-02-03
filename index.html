@@ -153,7 +153,7 @@
             
             //sample noise
             vec2 uv = vec2(point.x, point.y + time * 0.5) * 1.7;
-            float noise = iqnoise(uv, 0.5, 1.2);
+            float noise = length(hash3(vec2(floor(uv.x * 3.) / 3., floor(uv.y * 3.) / 3.)));
             float stepNoise = floor(noise * 10.2) / 11.; //stepping irregularly gives nice shapes 
             
             //draw outline around stepped noise
