@@ -34,7 +34,7 @@
         }
 
         .text-effect {
-            position: absolute;
+            position: fixed;
             width: 100%;
             height: 100%;
             display: flex;
@@ -86,48 +86,48 @@
 
         varying vec2 vUv;
 
-        // vec3 hash3( vec2 p ) {
-        //     vec3 q = vec3( dot(p,vec2(127.1,311.7)), 
-        //                    dot(p,vec2(269.5,183.3)), 
-        //                    dot(p,vec2(419.2,371.9)) );
-        //     return fract(sin(q)*43758.5453);
-        // }
+        vec3 hash3( vec2 p ) {
+            vec3 q = vec3( dot(p,vec2(127.1,311.7)), 
+                           dot(p,vec2(269.5,183.3)), 
+                           dot(p,vec2(419.2,371.9)) );
+            return fract(sin(q)*43758.5453);
+        }
 
 
-        // //iq voronoise
-        // float iqnoise( in vec2 x, float u, float v ) {
-        //     vec2 p = floor(x);
-        //     vec2 f = fract(x);
+        //iq voronoise
+        float iqnoise( in vec2 x, float u, float v ) {
+            vec2 p = floor(x);
+            vec2 f = fract(x);
                 
-        //     float k = 1.0+63.0*pow(1.0-v,4.0);
+            float k = 1.0+63.0*pow(1.0-v,4.0);
             
-        //     float va = 0.0;
-        //     float wt = 0.0;
-        //     for( int j=-2; j<=2; j++ )
-        //     for( int i=-2; i<=2; i++ )
-        //     {
-        //         vec2 g = vec2( float(i),float(j) );
-        //         vec3 o = hash3( p + g )*vec3(u,u,1.0);
-        //         vec2 r = g - f + o.xy;
-        //         float d = dot(r,r);
-        //         float ww = pow( 1.0-smoothstep(0.0,1.414,sqrt(d)), k );
-        //         va += o.z*ww;
-        //         wt += ww;
-        //     }
+            float va = 0.0;
+            float wt = 0.0;
+            for( int j=-2; j<=2; j++ )
+            for( int i=-2; i<=2; i++ )
+            {
+                vec2 g = vec2( float(i),float(j) );
+                vec3 o = hash3( p + g )*vec3(u,u,1.0);
+                vec2 r = g - f + o.xy;
+                float d = dot(r,r);
+                float ww = pow( 1.0-smoothstep(0.0,1.414,sqrt(d)), k );
+                va += o.z*ww;
+                wt += ww;
+            }
             
-        //     return va/wt;
-        // }
+            return va/wt;
+        }
 
-        // //iq palette
-        // vec3 palette(in float t) {
-        //     //colors
-        //     vec3 a = vec3(0.5, 0.5, 0.5);  
-        //     vec3 b = vec3(0.5, 0.5, 0.5);
-        //     vec3 c = vec3(1.0, 1.0, 1.0);
-        //     vec3 d = vec3(0.3, 0.15, 0.87);
+        //iq palette
+        vec3 palette(in float t) {
+            //colors
+            vec3 a = vec3(0.5, 0.5, 0.5);  
+            vec3 b = vec3(0.5, 0.5, 0.5);
+            vec3 c = vec3(1.0, 1.0, 1.0);
+            vec3 d = vec3(0.3, 0.15, 0.87);
             
-        //     return a + b * cos(6.28318 * (c * t + d));
-        // }
+            return a + b * cos(6.28318 * (c * t + d));
+        }
 
         float sin01(in float t){
             return (sin(t) + 1.) * 0.5;
@@ -137,7 +137,7 @@
         void main( void ) {
             vec2 point = vUv;
             float noise = floor((vUv.x + (abs(sin(time))/ 4.) + abs(sin(vUv.y + time))*0.235) * 20.) / 20.;
-            vec3 finalColor = vec3(noise, 0, 0);
+            vec3 finalColor = palette(noise);
             gl_FragColor = vec4(finalColor, 1.0);
         }
     </script>
