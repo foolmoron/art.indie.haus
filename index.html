@@ -74,6 +74,10 @@
         //paint tunnel by @samloeschen
         //simple planar distortion tunnel made out of IQ voronoise
 
+        #ifdef GL_ES
+        precision mediump float;
+        #endif
+
         uniform float time;
         uniform float mouseX;
         uniform float mouseY;
@@ -99,14 +103,16 @@
             
             float va = 0.0;
             float wt = 0.0;
-            for( int j=-1; j<=1; j++ )
-            for( int i=-1; i<=1; i++ )
+            for( int j=-2; j<=2; j++ )
+            for( int i=-2; i<=2; i++ )
             {
                 vec2 g = vec2( float(i),float(j) );
                 vec3 o = hash3( p + g )*vec3(u,u,1.0);
-                float d = dot(o.xy, o.xy);
-                va += o.z*d;
-                wt += d;
+                vec2 r = g - f + o.xy;
+                float d = dot(r,r);
+                float ww = pow( 1.0-smoothstep(0.0,1.414,sqrt(d)), k );
+                va += o.z*ww;
+                wt += ww;
             }
             
             return va/wt;
@@ -158,7 +164,7 @@
             vec3 palette = palette((stepNoise * 0.5) + sin01(time * 0.4) * 0.2);
             
             //combine
-            vec3 finalColor = palette + circle;// + outlineCol;
+            vec3 finalColor = palette + circle + outlineCol;
             gl_FragColor = vec4(finalColor, 1.0);
         }
     </script>
