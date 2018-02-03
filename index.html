@@ -60,8 +60,8 @@
 </head>
 <body>
     <canvas id="canvas"></canvas>
-    <div class="text-effect bottom">ART<br>HAUS</div>
-    <div class="text-effect top">ART<br>HAUS</div>
+    <div class="text-effect bottom">ZZZ<br>HAUS</div>
+    <div class="text-effect top">ZZZ<br>HAUS</div>
     <script id="vert" type="x-shader/x-fragment">
         varying vec2 vUv;
 
@@ -89,12 +89,9 @@
             return fract(sin(q)*43758.5453);
         }
 
-        float ilerp(float a, float b, float t) {
-            return saturate((t - a) / (b - a));
-        }
 
         //iq voronoise
-        float iqnoise( vec2 x, float u, float v ) {
+        float iqnoise( in vec2 x, float u, float v ) {
             vec2 p = floor(x);
             vec2 f = fract(x);
                 
@@ -109,7 +106,7 @@
                 vec3 o = hash3( p + g )*vec3(u,u,1.0);
                 vec2 r = g - f + o.xy;
                 float d = dot(r,r);
-                float ww = pow( 1.0-ilerp(0.0,1.414,sqrt(d)), k );
+                float ww = pow( 1.0-smoothstep(0.0,1.414,sqrt(d)), k );
                 va += o.z*ww;
                 wt += ww;
             }
@@ -118,7 +115,7 @@
         }
 
         //iq palette
-        vec3 palette(float t) {
+        vec3 palette(in float t) {
             //colors
             vec3 a = vec3(0.5, 0.5, 0.5);  
             vec3 b = vec3(0.5, 0.5, 0.5);
@@ -128,7 +125,7 @@
             return a + b * cos(6.28318 * (c * t + d));
         }
 
-        float sin01(float t){
+        float sin01(in float t){
             return (sin(t) + 1.) * 0.5;
         }
 
@@ -156,8 +153,8 @@
             float stepNoise = floor(noise * 10.2) / 11.; //stepping irregularly gives nice shapes 
             
             //draw outline around stepped noise
-            float outline = 1.0 - step(ilerp(stepNoise - 0.03, stepNoise, noise) - (ilerp(stepNoise, stepNoise + 0.03, noise)), 0.03);
-            vec3 outlineCol = outline * palette(sin01(time * 0.2));
+            // float outline = 1.0 - step(smoothstep(stepNoise - 0.03, stepNoise, noise) - (smoothstep(stepNoise, stepNoise + 0.03, noise)), 0.03);
+            // vec3 outlineCol = outline * palette(sin01(time * 0.2));
             
             //get tunnel color from palette. I tried directly attenuating this by length of the fragment but it kept blowing out to white
             vec3 palette = palette((stepNoise * 0.5) + sin01(time * 0.4) * 0.2);
