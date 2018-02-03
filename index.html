@@ -7,6 +7,7 @@
         body {
             background: white;
             margin: 0;
+            overflow: hidden;
         }
 
         #canvas {
@@ -31,10 +32,36 @@
             font-weight: bold;
             text-align: center;
         }
+
+        .text-effect {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: monospace;
+            font-size: 50em;
+            line-height: 0.69em;
+            text-align: center;
+            z-index: 20;
+        }
+        .bottom {
+            color: #333333;
+            mix-blend-mode: difference;
+            z-index: 20;
+        }
+        .top {
+            color: #e8e8e8;
+            mix-blend-mode: saturation;
+            z-index: 30;
+        }
     </style>
 </head>
 <body>
     <canvas id="canvas"></canvas>
+    <div class="text-effect bottom">ART<br>HAUS</div>
+    <div class="text-effect top">ART<br>HAUS</div>
     <script id="vert" type="x-shader/x-fragment">
         varying vec2 vUv;
 
