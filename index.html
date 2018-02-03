@@ -74,10 +74,6 @@
         //paint tunnel by @samloeschen
         //simple planar distortion tunnel made out of IQ voronoise
 
-        #ifdef GL_ES
-        precision mediump float;
-        #endif
-
         uniform float time;
         uniform float mouseX;
         uniform float mouseY;
@@ -136,8 +132,27 @@
 
         void main( void ) {
             vec2 point = vUv;
+            //vec2 mouse = (mouse.xy - 0.5) * 0.1; mouse is kind of ugly?
+            vec2 center = vec2(0.5 - (sin(time * 0.5) * 0.05), 0.5 - (sin(time * 0.25) * 0.1));
+
+            //aspect ratio
+            float aspect = resolutionX / resolutionY;
+            point *= aspect;
+            center *= aspect;
+            
+            //planar distortion
+            float rInv = 1. / length(point - center);
+            point = point * rInv - vec2(rInv, 0.0);
+
+            //attenuate center glow
+            float circle = pow(length((point - center) * 0.08), 0.3) * pow((aspect >= 1.0 ? 1.0/aspect : aspect), 0.2);
+            
+            //get tunnel color from palette. I tried directly attenuating this by length of the fragment but it kept blowing out to white
             float noise = floor((vUv.x + (abs(sin(time))/ 4.) + abs(sin(vUv.y + time))*0.235) * 20.) / 20.;
-            vec3 finalColor = palette(noise);
+            vec3 palette = palette((noise * 0.5) + sin01(time * 0.4) * 0.2);
+            
+            //combine
+            vec3 finalColor = palette + circle;// + outlineCol;
             gl_FragColor = vec4(finalColor, 1.0);
         }
     </script>
