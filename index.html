@@ -104,11 +104,9 @@
             {
                 vec2 g = vec2( float(i),float(j) );
                 vec3 o = hash3( p + g )*vec3(u,u,1.0);
-                vec2 r = g - f + o.xy;
-                float d = dot(r,r);
-                float ww = 1.0-smoothstep(0.0,1.414,sqrt(d));
-                va += o.z*ww;
-                wt += ww;
+                float d = dot(o.xy, o.xy);
+                va += o.z*d;
+                wt += d;
             }
             
             return va/wt;
