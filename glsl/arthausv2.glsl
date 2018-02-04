@@ -98,7 +98,5 @@ void main( void ) {
 	
 	//combine
 	vec3 finalColor = palette + outlineCol + circle + glow;
-	//finalColor = vec3(glow + circle);
 	gl_FragColor = vec4(finalColor, 1.0);	
 }
-
