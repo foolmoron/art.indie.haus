@@ -44,7 +44,6 @@
             font-size: 50em;
             line-height: 0.69em;
             text-align: center;
-            z-index: 20;
         }
         .bottom {
             color: #333333;
@@ -56,11 +55,24 @@
             mix-blend-mode: saturation;
             z-index: 30;
         }
+
+        .fader {
+            position: fixed;
+            background-color: #1a1a1a;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            transition: opacity 2.7s cubic-bezier(0.9, 0.09, 0.99, 0.49);
+        }
+        .fader.fade {
+            opacity: 0;
+        }
     </style>
 </head>
 <body>
     <div class="text-effect bottom">ART<br>HAUS</div>
     <div class="text-effect top">ART<br>HAUS</div>
+    <div class="fader"></div>
     <script id="surfaceVertexShader" type="x-shader/x-vertex">
         attribute vec3 position;
         attribute vec2 surfacePosAttrib;

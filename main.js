@@ -68,3 +68,6 @@ window.addEventListener('mousemove', function(e) {
 window.addEventListener('mousedown', function(e) {
     latestMouseClick = {x: e.screenX / window.innerWidth, y: e.screenY / window.innerHeight }
 })
+
+// fader
+document.querySelector('.fader').classList.add('fade');
