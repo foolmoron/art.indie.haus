@@ -399,6 +399,8 @@ var previousTime = performance.now();
 var sampleIndex = 0;
 var SAMPLE_N = 20;
 var avgTime = 0;
+var MAX_TIME = 35;
+var MIN_TIME = 13.7;
 function render() {
 	if ( !currentProgram ) return;
 	// instrument performance
@@ -406,14 +408,16 @@ function render() {
 	var dt = t - previousTime;
 	if (sampleIndex >= SAMPLE_N) {
 		// check timing, adjust quality
-		if (avgTime >= 18) {
-			quality *= 2;
+		var prevQuality = quality;
+		if (avgTime >= MAX_TIME) {
+			quality = quality * 2;
+		} else if (avgTime <= MIN_TIME) {
+			quality = quality / 2;
+		}
+		quality = Math.max(0.5, Math.min(8, quality));
+		if (prevQuality != quality) {
 			onWindowResize();
-			console.log('Average frame time is ' + avgTime.toFixed(3) + 'ms, lowering quality to ' + quality);
-		} else if (avgTime <= 10) {
-			quality /= 2;
-			onWindowResize();
-			console.log('Average frame time is ' + avgTime.toFixed(3) + 'ms, raising quality to ' + quality);
+			console.log('Average frame time is ' + avgTime.toFixed(3) + 'ms, ' + (prevQuality < quality ? 'lowering' : 'raising') + ' quality to ' + quality);
 		}
 		// reset
 		avgTime = 0;
