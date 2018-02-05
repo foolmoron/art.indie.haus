@@ -64,10 +64,15 @@ var latestMousePosition = {x: 0.5, y: 0.5 }
 var latestMouseClick = {x: 0.5, y: 0.5 }
 window.addEventListener('mousemove', function(e) {
     latestMousePosition = {x: e.clientX / window.innerWidth, y: 1 - e.clientY / window.innerHeight }
-    console.log(latestMousePosition);
 })
 window.addEventListener('mousedown', function(e) {
     latestMouseClick = {x: e.clientX / window.innerWidth, y: 1 - e.clientY / window.innerHeight }
+})
+window.addEventListener('touchmove', function(e) {
+    latestMousePosition = {x: e.touches[e.which].clientX / window.innerWidth, y: 1 - e.touches[e.which].clientY / window.innerHeight }
+})
+window.addEventListener('touchstart', function(e) {
+    latestMouseClick = {x: e.touches[e.which].clientX / window.innerWidth, y: 1 - e.touches[e.which].clientY / window.innerHeight }
 })
 
 // fader
