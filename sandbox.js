@@ -400,7 +400,7 @@ var sampleIndex = 0;
 var SAMPLE_N = 20;
 var avgTime = 0;
 var MAX_TIME = 35;
-var MIN_TIME = 13.7;
+var MIN_TIME = 13.9;
 function render() {
 	if ( !currentProgram ) return;
 	// instrument performance
@@ -428,8 +428,8 @@ function render() {
 	sampleIndex++;
 	previousTime = t;
 
-	parameters.mouseX = lerp(parameters.mouseX, latestMousePosition.x, 0.01);
-	parameters.mouseY = lerp(parameters.mouseY, latestMousePosition.y, 0.01);
+	parameters.mouseX = lerp(parameters.mouseX, latestMousePosition.x, (dt / 16) * 0.01);
+	parameters.mouseY = lerp(parameters.mouseY, latestMousePosition.y, (dt / 16) * 0.01);
 
 	parameters.time = Date.now() - parameters.startTime;
 	// Set uniforms for custom shader
