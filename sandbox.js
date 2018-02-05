@@ -428,8 +428,8 @@ function render() {
 	sampleIndex++;
 	previousTime = t;
 
-	parameters.mouseX = lerp(parameters.mouseX, latestMousePosition.x, (dt / 16) * 0.01);
-	parameters.mouseY = lerp(parameters.mouseY, latestMousePosition.y, (dt / 16) * 0.01);
+	parameters.mouseX = lerp(parameters.mouseX, latestMousePosition.x, (dt/16 || 1) * 0.01);
+	parameters.mouseY = lerp(parameters.mouseY, latestMousePosition.y, (dt/16 || 1) * 0.01);
 
 	parameters.time = Date.now() - parameters.startTime;
 	// Set uniforms for custom shader
