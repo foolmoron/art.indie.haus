@@ -106,9 +106,6 @@ function init() {
 		clientYLast = clientY;
 		stopHideUI();
 		var codeElement, dx, dy;
-		
-		parameters.mouseX = clientX / window.innerWidth;
-		parameters.mouseY = 1 - clientY / window.innerHeight;
 			
 		if (resizer.isResizing) {
 			resizer.currentWidth = Math.max(Math.min(clientX - resizer.offsetMouseX, resizer.maxWidth), resizer.minWidth);
@@ -390,6 +387,9 @@ function onWindowResize( event ) {
 		
 	}
 }
+function lerp(a, b, t) {
+	return (1 - t)*a + (t)*b;
+}
 //
 function animate() {
 	requestAnimationFrame( animate );
@@ -427,6 +427,9 @@ function render() {
 	avgTime += dt / SAMPLE_N;
 	sampleIndex++;
 	previousTime = t;
+
+	parameters.mouseX = lerp(parameters.mouseX, latestMousePosition.x, 0.01);
+	parameters.mouseY = lerp(parameters.mouseY, latestMousePosition.y, 0.01);
 
 	parameters.time = Date.now() - parameters.startTime;
 	// Set uniforms for custom shader

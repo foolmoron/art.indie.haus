@@ -63,10 +63,11 @@ window.addEventListener('deviceorientation', function(e) {
 var latestMousePosition = {x: 0.5, y: 0.5 }
 var latestMouseClick = {x: 0.5, y: 0.5 }
 window.addEventListener('mousemove', function(e) {
-    latestMousePosition = {x: e.screenX / window.innerWidth, y: e.screenY / window.innerHeight }
+    latestMousePosition = {x: e.clientX / window.innerWidth, y: 1 - e.clientY / window.innerHeight }
+    console.log(latestMousePosition);
 })
 window.addEventListener('mousedown', function(e) {
-    latestMouseClick = {x: e.screenX / window.innerWidth, y: e.screenY / window.innerHeight }
+    latestMouseClick = {x: e.clientX / window.innerWidth, y: 1 - e.clientY / window.innerHeight }
 })
 
 // fader
