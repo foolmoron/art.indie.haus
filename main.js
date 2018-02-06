@@ -77,3 +77,12 @@ window.addEventListener('touchstart', function(e) {
 
 // fader
 document.querySelector('.fader').classList.add('fade');
+
+// blend toggle
+var blendText = document.querySelector('#blend-cycle');
+var modes = ['color', 'color-burn', 'color-dodge', 'overlay', 'multiply'];
+var mode = Math.floor(modes.length * Math.random());
+setInterval(function() {
+    mode = (mode + 1) % modes.length;
+    blendText.style.mixBlendMode = modes[mode];
+}, 5000);
